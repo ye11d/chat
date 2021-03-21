@@ -10,7 +10,7 @@
 
 2021/3/21
 
-#### 目前已做功能效果预览
-![](https://github.com/ye11d/chat/raw/master/server/preimg/1.jpg)
-![](https://github.com/ye11d/chat/raw/master/server/preimg/2.jpg)
-![](https://github.com/ye11d/chat/raw/master/server/preimg/3.jpg)
+#### 目前已做功能效果预览图
+![查找好友](https://github.com/ye11d/chat/blob/main/server/preimg/1.jpg)
+![好友列表](https://github.com/ye11d/chat/blob/main/server/preimg/2.jpg)
+![聊天页面](https://github.com/ye11d/chat/blob/main/server/preimg/3.jpg)
