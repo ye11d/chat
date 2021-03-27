@@ -19,3 +19,7 @@
 ![查找好友](https://github.com/ye11d/chat/blob/main/server/preimg/1.jpg)
 ![好友列表](https://github.com/ye11d/chat/blob/main/server/preimg/2.jpg)
 ![聊天页面](https://github.com/ye11d/chat/blob/main/server/preimg/3.jpg)
+
+
+后端对腾讯AI平台的nlp接口做了下封装
+2021/3/27
