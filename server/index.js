@@ -7,7 +7,7 @@ const io = require('socket.io')(server);
 
 const mysql = require('mysql');
 const MySQLStore = require('express-mysql-session')(session); //session接数据库
-// const bodyParser = require('body-parser'); //解析req.body
+const bodyParser = require('body-parser'); //解析req.body
 
 const config = require('./config')
 
@@ -58,11 +58,35 @@ io.use(function (socket, next) {
 });
 //app获得session req.session
 app.use(sessionMiddleware)
+//app扩大上传
+app.use(bodyParser.json({ limit: "2100000kb" }));
+// parse application/json
+app.use(express.json())
 
 
-
-
-
+const { speechRecognition, chat, speechSynthesis } = require('./nlp')
+const fs = require('fs')
+function saveAMR(speech) {
+  var dataBuffer = Buffer.from(speech, 'base64')
+  fs.writeFile(`hhhh.AMR`, dataBuffer, (err) => {
+    // console.log('error', err)
+  })
+  return `hhhh.AMR`
+}
+app.post('/aiChat', async (req, res) => {
+  // console.log('aichat')
+  // console.log('req.body', req.body.base64, typeof(req.body))
+  for(key in req.body) {
+    console.log('key', key)
+  }
+  let content = await speechRecognition(req.body.base64)
+  console.log('问:', content.result[0])
+  let result = await chat(content.result[0])
+  console.log('答:', result)
+  let speech = await speechSynthesis(result)
+  res.send(speech)
+  // saveAMR(speech)
+})
 //废弃的路由
 app.get('/', (req, res) => {
   // res.sendFile(__dirname + '/index.html');
@@ -266,6 +290,10 @@ io.on('connection', async (socket) => {
     // io.emit('chat message', msg);
     console.log('message data: ' + msg);
   });
+
+  socket.on('aiChat', (msg) => {
+
+  })
 });
 
 

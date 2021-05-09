@@ -41,8 +41,8 @@ android/app/libs
 android/keystores/debug.keystore
 
 # my add
-client/src/config.js
-server/config.js
-server/test.js
-server/index.html
-server/nlp/config.js
+# client/src/config.js
+# server/config.js
+# server/test.js
+# server/index.html
+# server/nlp/config.js

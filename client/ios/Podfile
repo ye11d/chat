@@ -6,11 +6,11 @@ platform :ios, '10.0'
 target 'client' do
   config = use_native_modules!
 
-  use_react_native!(:path => config["reactNativePath"])
-
-  pod 'RNSound', :path => '../node_modules/react-native-sound'
-
-  pod 'RNAudio', :path => '../node_modules/react-native-audio'
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # to enable hermes on iOS, change `false` to `true` and then install pods
+    :hermes_enabled => false
+  )
 
   target 'clientTests' do
     inherit! :complete
@@ -20,18 +20,10 @@ target 'client' do
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
-  # you should disable these next few lines.
-  use_flipper!
+  # you should disable the next line.
+  use_flipper!()
+
   post_install do |installer|
-    flipper_post_install(installer)
-  end
-end
-
-target 'client-tvOS' do
-  # Pods for client-tvOS
-
-  target 'client-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
+    react_native_post_install(installer)
   end
 end

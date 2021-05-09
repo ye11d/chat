@@ -1,5 +1,5 @@
 import Storage from 'react-native-storage';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const storage = new Storage({
   // maximum capacity, default 1000 key-ids

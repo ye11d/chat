@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleSheet, Button, Text, View, ScrollView, Image, TextInput, TouchableHighlight, TouchableOpacity } from 'react-native';
 
-import moment from 'moment'
+// import moment from 'moment'
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'

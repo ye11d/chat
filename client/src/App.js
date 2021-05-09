@@ -15,7 +15,7 @@ const Stack = createStackNavigator();
 function App() {
   return(
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Audio">
         <Stack.Screen name="Login" component={LoginScreen}
           options={{
             headerShown: false

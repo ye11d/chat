@@ -3,14 +3,20 @@ import { View, Text, StyleSheet } from 'react-native';
 
 import Sound from 'react-native-sound';
 import { AudioRecorder, AudioUtils } from 'react-native-audio';
+import axios from 'axios';
+import qs from 'qs'
+import RNFS from 'react-native-fs';
+import Buffer from 'Buffer'
 
+import config from '../config'
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       hasPermission: undefined, //授权状态
-      audioPath: AudioUtils.DocumentDirectoryPath + '/test.aac', // 文件路径
+      audioPath: AudioUtils.DocumentDirectoryPath + '/question.amr', // 文件路径
+      answerAudioPath: AudioUtils.DocumentDirectoryPath + '/answer.amr',
       recording: false, //是否录音
       pause: false, //录音是否暂停
       stop: false, //录音是否停止
@@ -36,7 +42,30 @@ export default class App extends Component {
         AudioRecorder.onFinished = (data) => {
           // data 返回需要上传到后台的录音数据
           console.log(this.state.currentTime)
-          console.log(data)
+          // for(key in data) {
+          //   console.log('key', key, data.status)
+          // }
+          // data = data.base64.replace(/(^\A*)/g, "")
+          // console.log('data', data)
+          axios.post(config.url + "/aiChat", JSON.stringify(data), { headers: { 'Content-Type': 'application/json' } })
+            .then((res) => {
+              // console.log(`Status: ${res.status}`);
+              // console.log('Body: ', res.data);
+              let speech = res.data
+              console.log('audiopath', this.state.audioPath)
+              // var dataBuffer = Buffer.from(speech, 'base64')
+              RNFS.writeFile(this.state.answerAudioPath, speech, 'base64')
+              .then((success) => {
+                console.log('FILE WRITTEN!');
+              })
+              .catch((err) => {
+                console.log(err.message);
+              });
+              console.log('dududu1')
+            }).catch((err) => {
+              console.log('error', err);
+              // reject(err)
+            });
         };
       })
   };
@@ -49,14 +78,15 @@ export default class App extends Component {
    */
   prepareRecordingPath = (path) => {
     const option = {
-      SampleRate: 44100.0, //采样率
-      Channels: 2, //通道
+      // SampleRate: 44100.0, //采样率
+      SampleRate: 16000.0, //采样率
+      Channels: 1, //通道
       AudioQuality: 'High', //音质
-      AudioEncoding: 'aac', //音频编码
-      OutputFormat: 'mpeg_4', //输出格式
+      AudioEncoding: 'amr_wb', //音频编码
+      OutputFormat: 'amr_wb', //输出格式
       MeteringEnabled: false, //是否计量
       MeasurementMode: false, //测量模式
-      AudioEncodingBitRate: 32000, //音频编码比特率
+      AudioEncodingBitRate: 48000, //音频编码比特率
       IncludeBase64: true, //是否是base64格式
       AudioSource: 0, //音频源
     }
@@ -130,6 +160,24 @@ export default class App extends Component {
       whoosh.play(success => {
         if (success) {
           console.log('success - 播放成功')
+          console.log('path', this.state.audioPath)
+        } else {
+          console.log('fail - 播放失败')
+        }
+      })
+    })
+  }
+
+  // 发送录音
+  _send = async () => {
+    let whoosh = new Sound(this.state.answerAudioPath, '', (err) => {
+      if (err) {
+        return console.log(err)
+      }
+      whoosh.play(success => {
+        if (success) {
+          console.log('success - 播放成功')
+          console.log('path', this.state.answerAudioPath)
         } else {
           console.log('fail - 播放失败')
         }
@@ -138,6 +186,9 @@ export default class App extends Component {
   }
 
   render() {
+    const ExternalDirectoryPath = RNFS.ExternalDirectoryPath;
+    console.log('RNFS.ExternalDirectoryPath;', RNFS.ExternalCachesDirectoryPath)
+    console.log('RNFS.ExternalDirectoryPath;', this.state.audioPath)
     let { recording, pause, currentTime } = this.state
     return (
       <View style={styles.container}>
@@ -153,6 +204,7 @@ export default class App extends Component {
           }
         </Text>
         <Text style={styles.text}>时长: {currentTime}</Text>
+        <Text style={styles.text} onPress={this._send}> 播放回复的语音 </Text>
       </View>
     );
   }
