@@ -60,8 +60,10 @@ io.use(function (socket, next) {
 app.use(sessionMiddleware)
 //app扩大上传
 app.use(bodyParser.json({ limit: "2100000kb" }));
+// 解析 url编码
+app.use(bodyParser.urlencoded({ extended: true }));
 // parse application/json
-app.use(express.json())
+// app.use(express.json())
 
 
 const { speechRecognition, chat, speechSynthesis } = require('./nlp')
@@ -73,12 +75,14 @@ function saveAMR(speech) {
   })
   return `hhhh.AMR`
 }
+
+//音频->返回音频
 app.post('/aiChat', async (req, res) => {
   // console.log('aichat')
   // console.log('req.body', req.body.base64, typeof(req.body))
-  for(key in req.body) {
-    console.log('key', key)
-  }
+  // for(key in req.body) {
+  //   console.log('key', key)
+  // }
   let content = await speechRecognition(req.body.base64)
   console.log('问:', content.result[0])
   let result = await chat(content.result[0])
@@ -87,6 +91,21 @@ app.post('/aiChat', async (req, res) => {
   res.send(speech)
   // saveAMR(speech)
 })
+
+app.post('/aiChatContent', async (req, res) => {
+  let content = await speechRecognition(req.body.base64)
+  console.log('问:', content.result[0])
+  let result = await chat(content.result[0])
+  console.log('答:', result)
+  res.send(result)
+})
+
+app.post('/speechSynthesis', async (req, res) => {
+  let content = req.body.content
+  let speech = await speechSynthesis(content)
+  res.send(speech)
+})
+
 //废弃的路由
 app.get('/', (req, res) => {
   // res.sendFile(__dirname + '/index.html');

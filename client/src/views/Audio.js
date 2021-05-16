@@ -15,8 +15,8 @@ export default class App extends Component {
     super(props);
     this.state = {
       hasPermission: undefined, //授权状态
-      audioPath: AudioUtils.DocumentDirectoryPath + '/question.amr', // 文件路径
-      answerAudioPath: AudioUtils.DocumentDirectoryPath + '/answer.amr',
+      audioPath: AudioUtils.DocumentDirectoryPath + '/question.amr', // 录音文件路径
+      answerAudioPath: AudioUtils.DocumentDirectoryPath + '/answer.amr',// 返回语音文件路径
       recording: false, //是否录音
       pause: false, //录音是否暂停
       stop: false, //录音是否停止
@@ -40,13 +40,7 @@ export default class App extends Component {
         };
         // 完成录音
         AudioRecorder.onFinished = (data) => {
-          // data 返回需要上传到后台的录音数据
           console.log(this.state.currentTime)
-          // for(key in data) {
-          //   console.log('key', key, data.status)
-          // }
-          // data = data.base64.replace(/(^\A*)/g, "")
-          // console.log('data', data)
           axios.post(config.url + "/aiChat", JSON.stringify(data), { headers: { 'Content-Type': 'application/json' } })
             .then((res) => {
               // console.log(`Status: ${res.status}`);
@@ -64,7 +58,6 @@ export default class App extends Component {
               console.log('dududu1')
             }).catch((err) => {
               console.log('error', err);
-              // reject(err)
             });
         };
       })
@@ -78,7 +71,6 @@ export default class App extends Component {
    */
   prepareRecordingPath = (path) => {
     const option = {
-      // SampleRate: 44100.0, //采样率
       SampleRate: 16000.0, //采样率
       Channels: 1, //通道
       AudioQuality: 'High', //音质

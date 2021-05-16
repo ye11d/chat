@@ -9,13 +9,14 @@ import Main from './views/Main'
 import LoginScreen from './views/LoginScreen'
 import ChatScreen from './views/ChatScreen'
 import Audio from './views/Audio'
+import Video from './views/Video'
 
 const Stack = createStackNavigator();
 
 function App() {
   return(
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Audio">
+      <Stack.Navigator initialRouteName="Video">
         <Stack.Screen name="Login" component={LoginScreen}
           options={{
             headerShown: false
@@ -31,6 +32,10 @@ function App() {
         <Stack.Screen
           name="Audio"
           component={Audio}
+        />
+        <Stack.Screen
+          name="Video"
+          component={Video}
         />
       </Stack.Navigator>
     </NavigationContainer>
